@@ -18,7 +18,16 @@ window.PIXI = PIXI;
 require("pixi-spine")
 
 var saveNextFrame = false
-console.log("TO USE:\n\tPause and unpause the animation to choose the one you want;\n\tReload the page once you chose it;\n\tDont touch the play button;\n\tClick the animation you want;\n\tClick the fullscreen button;\n\tClick anywhere in the frame and press 'c';\n\tIt will advance to the next frame and download it;\n\tkeep pressing 'c' to download more frames")
+console.log(`
+ - Go to /leaders, choose the one you want, and click \`View Leader Animations\`
+ - On the right choose the animaton you want
+ - Pause the animation
+ - Click the fullscreen button, and F11 so that the animation canvas is max size
+ - Click anywhere in the animation canvas and press \`c\`
+ - It will advance to the next frame and download it
+   ( If it works there will be logs in the browser console )
+   ( To change the fps go to \`\\src\\components\\LeaderAnimations.jsx\` and edit line 15 )
+ - Keep pressing \`c\` to progress the animation and download more frames`)
 
 // this component is all kinds of messed up, I should be using state properly
 class LeaderAnimations extends React.Component {
