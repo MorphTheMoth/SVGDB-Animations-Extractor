@@ -2,7 +2,7 @@
 
 Fork  of [SVGDB-frontend](https://github.com/Heionbuji/SVGDB-frontend)
 
-Added a pretty rough way to extract the Leader's animations into keyframes using the [Canvas Capture](https://github.com/amandaghassaei/canvas-capture) module
+Roughly added a way to extract the Leader's animations into keyframes using the [Canvas Capture](https://github.com/amandaghassaei/canvas-capture) module, so that it will download every frame you want as a .png and it will preserve the original transparency.
 
 ## Usage
 
