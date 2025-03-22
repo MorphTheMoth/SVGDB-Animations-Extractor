@@ -12,6 +12,8 @@ import {
 } from '../styles/leaderAnimationStyles';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 
+var framesPerSecond = 22
+
 window.PIXI = PIXI;
 require("pixi-spine")
 
@@ -81,7 +83,7 @@ class LeaderAnimations extends React.Component {
 
   animate = () => {
     let renderer = this.app.renderer;
-    let time = 1/32;
+    let time = 1/framesPerSecond;
 
     if(saveNextFrame){
       this.animation.update(time)
