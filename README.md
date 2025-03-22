@@ -21,12 +21,12 @@ And start a development server with
 npm run start
 ```
 Then to extract the animation :
- - Go to /leaders, choose the one you want, and click 'View Leader Animations'
+ - Go to /leaders, choose the one you want, and click `View Leader Animations`
  - Pause and unpause the animation to view it, and on the right choose the animaton you want
  - Reload the page after you chose it
  - Dont touch the play button
  - Click the animation you want on the right
  - Click the fullscreen button, and F11 so that the canvas is max size
- - Click anywhere in the canvas and press 'c' (If it works there will be logs in the F12 js console, and one frame will be downloaded)
- - It will advance to the next frame and download it (To change the fps go to \src\components\LeaderAnimations.jsx and edit line 15)
- - Keep pressing 'c' to progress the animation and download more frames
+ - Click anywhere in the canvas and press `c` (If it works there will be logs in the F12 js console, and one frame will be downloaded)
+ - It will advance to the next frame and download it (To change the fps go to `\src\components\LeaderAnimations.jsx` and edit line 15)
+ - Keep pressing `c` to progress the animation and download more frames
