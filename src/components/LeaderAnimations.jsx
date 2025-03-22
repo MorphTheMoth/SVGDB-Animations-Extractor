@@ -105,7 +105,7 @@ class LeaderAnimations extends React.Component {
   }
 
   setup = () => {
-    window.PIXI.spine.Spine.globalAutoUpdate = false;
+    window.PIXI.spine.Spine.globalAutoUpdate = true;
     this.app.loader.baseUrl = process.env.REACT_APP_ASSETS_URL + '/anim/';
     this.app.loader
     .add('class_' + this.props.classId + '.json', 'class_' + this.props.classId + '.json')
