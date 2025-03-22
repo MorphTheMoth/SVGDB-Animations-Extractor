@@ -1,4 +1,5 @@
 import React from 'react';
+import { CanvasCapture } from 'canvas-capture';
 import * as PIXI from 'pixi.js';
 import { withTranslation } from 'react-i18next';
 import {
@@ -14,6 +15,9 @@ import { HexColorPicker, HexColorInput } from 'react-colorful';
 window.PIXI = PIXI;
 require("pixi-spine")
 
+var saveNextFrame = false
+console.log("TO USE:\n\tPause and unpause the animation to choose the one you want;\n\tReload the page once you chose it;\n\tDont touch the play button;\n\tClick the animation you want;\n\tClick the fullscreen button;\n\tClick anywhere in the frame and press 'c';\n\tIt will advance to the next frame and download it;\n\tkeep pressing 'c' to download more frames")
+
 // this component is all kinds of messed up, I should be using state properly
 class LeaderAnimations extends React.Component {
   constructor(props) {
@@ -22,7 +26,11 @@ class LeaderAnimations extends React.Component {
     this.loading = true;
     this.pixi_cnt = null;
     this.buttonRow = React.createRef();
-    this.app = new PIXI.Application({width: window.innerWidth > window.innerHeight ? window.innerWidth / 2 : window.innerWidth, height: window.innerWidth > window.innerHeight ? window.innerWidth / 2 : window.innerWidth, transparent:false});
+    this.app = new PIXI.Application({
+        width: window.innerWidth > window.innerHeight ? window.innerWidth / 2 : window.innerWidth,
+        height: window.innerWidth > window.innerHeight ? window.innerWidth / 2 : window.innerWidth,
+        transparent: true
+    });
     this.animation = null;
     this.animScale = 1;
     this.isFullscreen = false;
@@ -51,13 +59,14 @@ class LeaderAnimations extends React.Component {
   };
 
   componentWillUnmount() {
-    window.PIXI.spine.Spine.globalAutoUpdate = true;
+    window.PIXI.spine.Spine.globalAutoUpdate = false;
   }
 
   updatePixiCnt = (element) => {
     this.pixi_cnt = element;
     if(this.pixi_cnt && this.pixi_cnt.children.length<=0) {
       this.pixi_cnt.appendChild(this.app.view);
+      this.app.view.tabIndex=1
       this.app.view.addEventListener('mousedown', this.onMouseDown);
       this.app.view.addEventListener('mouseup', this.onMouseUp);
       this.app.view.addEventListener('mousemove', this.onMouseMove);
@@ -65,17 +74,42 @@ class LeaderAnimations extends React.Component {
       this.app.view.addEventListener('mouseleave', this.onMouseLeave);
       this.app.view.addEventListener('touchstart', this.onTouchDown);
       this.app.view.addEventListener('touchmove', this.onTouchMove);
+      this.app.view.addEventListener('keydown', this.onKeydown)
       this.setup();
     }
   };
 
+  animate = () => {
+    let renderer = this.app.renderer;
+    let time = 1/32;
+
+    if(saveNextFrame){
+      this.animation.update(time)
+      console.log('updating..');
+    }
+
+    renderer.render(this.app.stage)
+
+    //CanvasCapture.checkHotkeys();
+    if (/*CanvasCapture.isRecording()*/ saveNextFrame){
+      //CanvasCapture.recordFrame();
+      console.log('saving img');
+      CanvasCapture.takePNGSnapshot();
+      saveNextFrame = false
+      console.log("RECORDING>>>");
+    }
+
+    requestAnimationFrame( this.animate )
+  }
+
   setup = () => {
+    window.PIXI.spine.Spine.globalAutoUpdate = false;
     this.app.loader.baseUrl = process.env.REACT_APP_ASSETS_URL + '/anim/';
     this.app.loader
     .add('class_' + this.props.classId + '.json', 'class_' + this.props.classId + '.json')
     .load((loader, resources) => {
         this.animation = new window.PIXI.spine.Spine(resources['class_' + this.props.classId + '.json'].spineData);
-
+        //console.log(this.animation);
         this.animation.x = this.app.screen.width / 2;
         this.animation.y = this.app.screen.height / 2;
         this.animation.scale.set(this.animScale);
@@ -89,6 +123,31 @@ class LeaderAnimations extends React.Component {
         this.animation.state.setAnimation(0, 'idle', true);
         this.loading = false;
         this.setState(this.state);
+
+        CanvasCapture.init(
+          document.getElementsByClassName("sc-fzoXWK kThARv")[0].children[0],
+          { showRecDot: true }
+        );
+
+        CanvasCapture.bindKeyToPNGFramesRecord('f', {
+          onProgress: (progress) => {
+            console.log(`Zipping... ${Math.round(progress * 100)}% complete.`);
+          },
+          name: 'MilteoAnimation',
+          onError: (err) => {
+            console.log(err);
+          }
+        });
+
+        CanvasCapture.bindKeyToVideoRecord('v', {
+          format: CanvasCapture.MP4, // Options are optional, more info below.
+          name: 'myVideo',
+          quality: 1,
+        });
+
+        //saveNextFrame = true
+        this.animate()
+
     });
   };
 
@@ -213,7 +272,7 @@ class LeaderAnimations extends React.Component {
           className="actionButton"
           onClick={this.toggleFullscreen}
         />
-        
+
 
 
       </FadingDiv>
@@ -267,10 +326,17 @@ class LeaderAnimations extends React.Component {
     }
   }
 
+  onKeydown(e) {
+    switch (e.key.toString()) {
+      case 'c':
+        saveNextFrame = true;
+        console.log("'C' clicked");
+    }
+  }
+
   togglePaused() {
     this.isPaused = !this.isPaused;
     window.PIXI.spine.Spine.globalAutoUpdate = !this.isPaused;
-    
     this.setState(this.state);
   }
 
@@ -290,7 +356,7 @@ class LeaderAnimations extends React.Component {
 
   setBgColor(newColor) {
     this.bgColor = newColor;
-    this.app.renderer.backgroundColor = this.bgColor.replace('#', '0x');
+    //this.app.renderer.backgroundColor = this.bgColor.replace('#', '0x');
     this.setState(this.state);
   }
 
@@ -300,6 +366,8 @@ class LeaderAnimations extends React.Component {
   }
 
   render() {
+    //console.log(this.capturer);
+    //this.capturer.capture( this.app.renderer.gl.canvas );
     return (
       <DimBackground>
         <ForegroundDiv fullscreen={this.isFullscreen}>
