@@ -27,6 +27,8 @@ Then to extract the animation :
  - Dont touch the play button
  - Click the animation you want on the right
  - Click the fullscreen button, and F11 so that the canvas is max size
- - Click anywhere in the canvas and press `c` (If it works there will be logs in the F12 js console, and one frame will be downloaded)
- - It will advance to the next frame and download it (To change the fps go to `\src\components\LeaderAnimations.jsx` and edit line 15)
+ - Click anywhere in the canvas and press `c` 
+ - It will advance to the next frame and download it\
+   ( If it works there will be logs in the browser console )\
+   ( To change the fps go to `\src\components\LeaderAnimations.jsx` and edit line 15 )
  - Keep pressing `c` to progress the animation and download more frames
